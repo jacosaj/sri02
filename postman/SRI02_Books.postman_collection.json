@@ -1,0 +1,125 @@
+{
+  "info": {
+    "name": "SRI02 - Books CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "bookId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "GET all books",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/books",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"]
+        }
+      }
+    },
+    {
+      "name": "GET book by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{bookId}}"]
+        }
+      }
+    },
+    {
+      "name": "GET book by ID - not found",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/books/999",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "999"]
+        }
+      }
+    },
+    {
+      "name": "POST create book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Clean Code\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0132350884\",\n  \"publishedYear\": 2008,\n  \"price\": 49.99\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/books",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"]
+        }
+      }
+    },
+    {
+      "name": "PUT update book",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Clean Code (2nd Edition)\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"978-0132350884\",\n  \"publishedYear\": 2008,\n  \"price\": 39.99\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{bookId}}"]
+        }
+      }
+    },
+    {
+      "name": "PATCH update book price",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 29.99\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{bookId}}"]
+        }
+      }
+    },
+    {
+      "name": "DELETE book",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "{{bookId}}"]
+        }
+      }
+    }
+  ]
+}
