@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>edu.pja.sri.s34669</groupId>
-	<artifactId>sn-02</artifactId>
+	<artifactId>sri02</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sn-02</name>
 	<description>Solution for SRI-02 by s34669</description>
