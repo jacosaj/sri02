@@ -1,0 +1,240 @@
+{
+  "info": {
+    "name": "SRI-03 — Company & Employee REST API",
+    "_postman_id": "sri03-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "GET all companies",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/companies",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "GET company by id (with employees)",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/companies/1",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "POST create company (valid)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/companies",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nowa Firma Sp. z o.o.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST create company (INVALID — validation error)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/companies",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT update company",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8080/api/companies/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corporation Updated\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE company",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/companies/3"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Company — Employee Relationships",
+      "item": [
+        {
+          "name": "GET only employees of company (3b)",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/companies/1/employees",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "POST add employee to company (3c)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/companies/2/employees/3"
+          }
+        },
+        {
+          "name": "DELETE remove employee from company (3d)",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/companies/2/employees/3"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        {
+          "name": "GET all employees",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/employees",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "GET employee by id",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/employees/1",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "POST create employee (valid)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/employees",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Marek\",\n  \"lastName\": \"Zielinski\",\n  \"birthDate\": \"1995-07-20\",\n  \"job\": \"Tester\"\n}"
+            }
+          }
+        },
+        {
+          "name": "POST create employee (INVALID — validation error)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/employees",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"birthDate\": null,\n  \"job\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT update employee",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8080/api/employees/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jan\",\n  \"lastName\": \"Kowalski\",\n  \"birthDate\": \"1990-05-15\",\n  \"job\": \"Senior Developer\"\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE employee",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/employees/4"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "GET all books",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/books",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "GET book by id",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/books/1",
+            "header": [{ "key": "Accept", "value": "application/hal+json" }]
+          }
+        },
+        {
+          "name": "POST create book (valid)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/books",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\",\n  \"publishedYear\": 2008,\n  \"price\": 89.99\n}"
+            }
+          }
+        },
+        {
+          "name": "POST create book (INVALID — validation error)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/books",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"isbn\": \"\",\n  \"publishedYear\": 500,\n  \"price\": -10.0\n}"
+            }
+          }
+        },
+        {
+          "name": "PUT update book",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8080/api/books/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code (2nd ed.)\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\",\n  \"publishedYear\": 2008,\n  \"price\": 99.99\n}"
+            }
+          }
+        },
+        {
+          "name": "PATCH update book partially",
+          "request": {
+            "method": "PATCH",
+            "url": "http://localhost:8080/api/books/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 79.99\n}"
+            }
+          }
+        },
+        {
+          "name": "DELETE book",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/books/1"
+          }
+        }
+      ]
+    }
+  ]
+}
