@@ -1,9 +1,7 @@
 package edu.pja.sri.s34669.sri02.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -24,5 +22,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "employer_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Company employer;
 }
