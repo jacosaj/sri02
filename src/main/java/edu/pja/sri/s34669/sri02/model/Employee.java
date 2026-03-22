@@ -1,9 +1,6 @@
 package edu.pja.sri.s34669.sri02.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +20,9 @@ public class Employee {
     private String lastName;
     private LocalDate birthDate;
     private String job;
+
+
+    @ManyToOne
+    @JoinColumn(name = "employer_id")
+    private Company employer;
 }
