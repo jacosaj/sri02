@@ -3,96 +3,80 @@ package edu.pja.sri.s34669.sri02.rest;
 import edu.pja.sri.s34669.sri02.dto.EmployeeDto;
 import edu.pja.sri.s34669.sri02.model.Employee;
 import edu.pja.sri.s34669.sri02.repo.EmployeeRepository;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/api/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
-    private EmployeeRepository employeeRepository;
-    private ModelMapper modelMapper;
 
-    public EmployeeController(EmployeeRepository employeeRepository, ModelMapper modelMapper) {
-        this.employeeRepository = employeeRepository;
-        this.modelMapper = modelMapper;
-    }
+    private final EmployeeRepository employeeRepository;
+    private final ModelMapper modelMapper;
 
-    private EmployeeDto convertToDto(Employee e) {
-        return modelMapper.map(e, EmployeeDto.class);
-    }
-    private Employee convertToEntity(EmployeeDto dto) {
-        return modelMapper.map(dto, Employee.class);
+    private EntityModel<EmployeeDto> toModel(Employee employee) {
+        EmployeeDto dto = modelMapper.map(employee, EmployeeDto.class);
+        EntityModel<EmployeeDto> model = EntityModel.of(dto,
+                linkTo(methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel());
+        if (employee.getEmployer() != null) {
+            model.add(linkTo(methodOn(CompanyController.class)
+                    .getCompanyById(employee.getEmployer().getId())).withRel("employer"));
+        }
+        return model;
     }
 
     @GetMapping
-    public ResponseEntity<Collection<EmployeeDto>> getEmployees() {
-        List<Employee> allEmployees = employeeRepository.findAll();
-        List<EmployeeDto> result = allEmployees.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<EmployeeDto>>> getEmployees() {
+        List<EntityModel<EmployeeDto>> employees = employeeRepository.findAll().stream()
+                .map(this::toModel)
+                .toList();
+        CollectionModel<EntityModel<EmployeeDto>> result = CollectionModel.of(employees,
+                linkTo(methodOn(EmployeeController.class).getEmployees()).withSelfRel());
+        return ResponseEntity.ok(result);
     }
 
-
     @GetMapping("/{empId}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long empId) {
-        Optional<Employee> emp = employeeRepository.findById(empId);
-        if (emp.isPresent()) {
-            EmployeeDto employeeDto = convertToDto(emp.get());
-            return new ResponseEntity<>(employeeDto, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EntityModel<EmployeeDto>> getEmployeeById(@PathVariable Long empId) {
+        return employeeRepository.findById(empId)
+                .map(e -> ResponseEntity.ok(toModel(e)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity saveNewEmployee(@RequestBody EmployeeDto emp) {
-        Employee entity = convertToEntity(emp);
+    public ResponseEntity<?> saveNewEmployee(@Valid @RequestBody EmployeeDto emp) {
+        Employee entity = modelMapper.map(emp, Employee.class);
+        entity.setId(null);
         employeeRepository.save(entity);
-        HttpHeaders headers = new HttpHeaders();
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(entity.getId())
-                .toUri();
-        headers.add("Location", location.toString());
-        return new ResponseEntity(headers, HttpStatus.CREATED);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(entity.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/{empId}")
-    public ResponseEntity updateEmployee(@PathVariable Long empId,
-                                         @RequestBody EmployeeDto employeeDto) {
-        Optional<Employee> currentEmp = employeeRepository.findById(empId);
-        if (currentEmp.isPresent()) {
-            employeeDto.setId(empId);
-            Employee entity = convertToEntity(employeeDto);
-            employeeRepository.save(entity);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> updateEmployee(@PathVariable Long empId, @Valid @RequestBody EmployeeDto dto) {
+        if (!employeeRepository.existsById(empId)) return ResponseEntity.notFound().build();
+        dto.setId(empId);
+        employeeRepository.save(modelMapper.map(dto, Employee.class));
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{empId}")
-    public ResponseEntity deleteEmployee(@PathVariable Long empId) {
-        boolean found = employeeRepository.existsById(empId);
-        if (found) {
-            employeeRepository.deleteById(empId);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long empId) {
+        if (!employeeRepository.existsById(empId)) return ResponseEntity.notFound().build();
+        employeeRepository.deleteById(empId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
