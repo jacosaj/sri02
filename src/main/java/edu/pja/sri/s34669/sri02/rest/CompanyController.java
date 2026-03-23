@@ -37,7 +37,8 @@ public class CompanyController {
 
     private EntityModel<CompanyDto> toModel(Company company) {
         CompanyDto dto = modelMapper.map(company, CompanyDto.class);
-        return EntityModel.of(dto, , linkTo(methodOn(CompanyController.class).getCompanyById(company.getId())).withSelfRel(),
+        return EntityModel.of(dto,
+                linkTo(methodOn(CompanyController.class).getCompanyById(company.getId())).withSelfRel(),
                 linkTo(methodOn(CompanyController.class).getCompanyEmployees(company.getId())).withRel("employees"));
     }
 
